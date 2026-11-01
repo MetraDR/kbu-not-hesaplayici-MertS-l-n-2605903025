@@ -1,0 +1,406 @@
+,<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>KBÜ Not Hesaplayıcı</title>
+    
+    <!-- CSS BURADA BAŞLIYOR -->
+    <style>
+        :root {
+            --bg-color: #121212;
+            --surface: #1e1e1e;
+            --primary: #bb86fc;
+            --secondary: #03dac6;
+            --error: #cf6679;
+            --text: #ffffff;
+            --text-muted: #aaaaaa;
+            --border: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: var(--surface);
+            max-width: 450px;
+            width: 100%;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+        }
+
+        header h1 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .input-group, .select-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        input[type="number"], select {
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background-color: var(--bg-color);
+            color: var(--text);
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .input-error {
+            border-color: var(--error) !important;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+            background-color: var(--primary);
+            color: #000;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button.outline {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        button.outline:hover {
+            background-color: rgba(255,255,255,0.05);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .result-card {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: rgba(187, 134, 252, 0.05);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+        }
+
+        .result-card h2 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .result-card ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .result-card ul li {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.05rem;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            background-color: rgba(255,255,255,0.05);
+            border-left: 4px solid var(--primary);
+        }
+
+        .pass { color: var(--secondary) !important; }
+        .fail { color: var(--error) !important; }
+    </style>
+</head>
+<body>
+    
+    <!-- HTML BURADA BAŞLIYOR -->
+    <main class="container">
+        <header>
+            <h1>KBÜ Not Hesaplayıcı</h1>
+            <p>Vize, Final ve Bütünleme notlarınıza göre KBÜ yönetmeliğine uygun ders başarı durumunuzu hesaplayın.</p>
+        </header>
+
+        <section class="form-section">
+            <div class="input-group">
+                <label for="vize">Vize / Ara Sınav Notu (0-100) *</label>
+                <input type="number" id="vize" min="0" max="100" placeholder="Örn: 65">
+            </div>
+            <div class="input-group">
+                <label for="yil_ici">Yıl İçi Çalışma Puanı (Opsiyonel)</label>
+                <input type="number" id="yil_ici" min="0" max="100" placeholder="Boş ise Vize notu kabul edilir">
+            </div>
+
+            <div class="input-group">
+                <label for="final">Final Notu (0-100) *</label>
+                <input type="number" id="final" min="0" max="100" placeholder="Örn: 55">
+            </div>
+            <div class="input-group">
+                <label for="butunleme">Bütünleme Notu (Opsiyonel)</label>
+                <input type="number" id="butunleme" min="0" max="100" placeholder="Girilirse Final yerine geçer">
+            </div>
+
+            <div class="checkbox-group mt-3">
+                <input type="checkbox" id="devamsiz">
+                <label for="devamsiz">Devamsızım (F1 - Sınav hakkı yok)</label>
+            </div>
+            <div class="select-group">
+                <label for="sinava_girdi">Genel/Bütünleme Sınavına Girdiniz mi?</label>
+                <select id="sinava_girdi">
+                    <option value="evet">Evet, girdim</option>
+                    <option value="hayir">Hayır, girmedim (F2)</option>
+                </select>
+            </div>
+
+            <div class="button-group">
+                <button id="hesapla_btn">Hesapla</button>
+                <button id="sifirla_btn" class="outline">Sıfırla</button>
+            </div>
+        </section>
+
+        <!-- Sonuç Kartı -->
+        <section id="sonuc_alani" class="result-card hidden">
+            <h2>Hesaplama Sonucu</h2>
+            <ul>
+                <li><span>Başarı Notu:</span> <strong id="res_basari">-</strong></li>
+                <li><span>Harf Notu:</span> <strong id="res_harf">-</strong></li>
+                <li><span>Durum:</span> <strong id="res_durum">-</strong></li>
+            </ul>
+            <div class="alert" id="res_aciklama"></div>
+        </section>
+    </main>
+
+    <!-- JAVASCRIPT BURADA BAŞLIYOR -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const vizeInp = document.getElementById("vize");
+            const yiliciInp = document.getElementById("yil_ici");
+            const finalInp = document.getElementById("final");
+            const butunlemeInp = document.getElementById("butunleme");
+            
+            const devamsizChk = document.getElementById("devamsiz");
+            const sinavaGirdiSel = document.getElementById("sinava_girdi");
+            
+            const btnHesapla = document.getElementById("hesapla_btn");
+            const btnSifirla = document.getElementById("sifirla_btn");
+            
+            const sonucAlani = document.getElementById("sonuc_alani");
+            const resBasari = document.getElementById("res_basari");
+            const resHarf = document.getElementById("res_harf");
+            const resDurum = document.getElementById("res_durum");
+            const resAciklama = document.getElementById("res_aciklama");
+
+            devamsizChk.addEventListener("change", () => {
+                if (devamsizChk.checked) {
+                    sinavaGirdiSel.value = "hayir";
+                    sinavaGirdiSel.disabled = true;
+                } else {
+                    sinavaGirdiSel.value = "evet";
+                    sinavaGirdiSel.disabled = false;
+                }
+            });
+
+            butunlemeInp.addEventListener("input", () => {
+                if (butunlemeInp.value.trim() !== "") {
+                    finalInp.style.opacity = "0.4";
+                } else {
+                    finalInp.style.opacity = "1";
+                }
+            });
+
+            const showError = (mesaj, element) => {
+                sonucAlani.classList.remove("hidden");
+                sonucAlani.style.borderColor = "var(--error)";
+                resBasari.textContent = "-";
+                resHarf.textContent = "-";
+                resDurum.textContent = "Hata";
+                resDurum.className = "fail";
+                resAciklama.innerHTML = `<span style="color:var(--error)">${mesaj}</span>`;
+                
+                if (element) {
+                    element.classList.add("input-error");
+                    setTimeout(() => element.classList.remove("input-error"), 3000);
+                }
+            };
+
+            const showResult = (basari, harf, durumText, isPass, mesaj) => {
+                sonucAlani.classList.remove("hidden");
+                sonucAlani.style.borderColor = isPass ? "var(--secondary)" : "var(--error)";
+                
+                resBasari.textContent = basari;
+                resHarf.textContent = harf;
+                resDurum.textContent = durumText;
+                resDurum.className = isPass ? "pass" : "fail";
+                resAciklama.innerHTML = mesaj;
+            };
+
+            const hesapla = () => {
+                document.querySelectorAll("input").forEach(i => i.classList.remove("input-error"));
+
+                if (devamsizChk.checked) {
+                    showResult("0.00", "F1", "Kaldı", false, "Devamsız (F1) olduğunuz için doğrudan kaldınız. Sınav katsayıları 0 kabul edilir.");
+                    return;
+                }
+
+                if (sinavaGirdiSel.value === "hayir") {
+                    showResult("0.00", "F2", "Kaldı", false, "Devam şartını sağladığınız halde Genel/Bütünleme sınavına girmediğiniz için (F2) kaldınız.");
+                    return;
+                }
+
+                const vizeVal = vizeInp.value.trim();
+                const yiliciVal = yiliciInp.value.trim();
+                const finalVal = finalInp.value.trim();
+                const butunlemeVal = butunlemeInp.value.trim();
+
+                if (vizeVal === "" || isNaN(vizeVal) || Number(vizeVal) < 0 || Number(vizeVal) > 100) {
+                    showError("Lütfen 0 ile 100 arasında geçerli bir Vize notu giriniz.", vizeInp);
+                    return;
+                }
+
+                let yilIciNotu = Number(vizeVal);
+                if (yiliciVal !== "") {
+                    if (isNaN(yiliciVal) || Number(yiliciVal) < 0 || Number(yiliciVal) > 100) {
+                        showError("Lütfen 0 ile 100 arasında geçerli bir Yıl İçi Puanı giriniz veya boş bırakınız.", yiliciInp);
+                        return;
+                    }
+                    yilIciNotu = Number(yiliciVal);
+                }
+
+                let sinavNotu = 0;
+                if (butunlemeVal !== "") {
+                    if (isNaN(butunlemeVal) || Number(butunlemeVal) < 0 || Number(butunlemeVal) > 100) {
+                        showError("Lütfen 0 ile 100 arasında geçerli bir Bütünleme notu giriniz.", butunlemeInp);
+                        return;
+                    }
+                    sinavNotu = Number(butunlemeVal);
+                } else {
+                    if (finalVal === "" || isNaN(finalVal) || Number(finalVal) < 0 || Number(finalVal) > 100) {
+                        showError("Bütünleme girmeyecekseniz Final notu zorunludur.", finalInp);
+                        return;
+                    }
+                    sinavNotu = Number(finalVal);
+                }
+
+                const basariNotuNum = (yilIciNotu * 0.40) + (sinavNotu * 0.60);
+                const basariNotuStr = basariNotuNum.toFixed(2);
+
+                if (sinavNotu < 50) {
+                    showResult(basariNotuStr, "F3", "Kaldı", false, `Genel/Bütünleme sınav notunuz 50'nin altında (<strong>${sinavNotu}</strong>) olduğu için kaldınız.`);
+                    return;
+                }
+
+                if (basariNotuNum < 60) {
+                    showResult(basariNotuStr, "F3", "Kaldı", false, `Sınav barajını geçtiniz ancak Ders Başarı Notunuz 60'ın altında (<strong>${basariNotuStr}</strong>) kaldığı için kaldınız.`);
+                    return;
+                }
+
+                let harf = "";
+                if (basariNotuNum >= 90) harf = "A1";
+                else if (basariNotuNum >= 80) harf = "A2";
+                else if (basariNotuNum >= 70) harf = "B1";
+                else if (basariNotuNum >= 65) harf = "B2";
+                else if (basariNotuNum >= 60) harf = "C";
+
+                showResult(basariNotuStr, harf, "Geçti", true, "Tebrikler, tüm geçme koşullarını sağlayarak dersi geçtiniz.");
+            };
+
+            btnHesapla.addEventListener("click", hesapla);
+
+            btnSifirla.addEventListener("click", () => {
+                vizeInp.value = "";
+                yiliciInp.value = "";
+                finalInp.value = "";
+                butunlemeInp.value = "";
+                
+                devamsizChk.checked = false;
+                sinavaGirdiSel.value = "evet";
+                sinavaGirdiSel.disabled = false;
+                finalInp.style.opacity = "1";
+                
+                document.querySelectorAll("input").forEach(i => i.classList.remove("input-error"));
+                sonucAlani.classList.add("hidden");
+            });
+
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") {
+                    hesapla();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
